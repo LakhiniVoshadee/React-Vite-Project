@@ -27,4 +27,5 @@ This project was created as a class exercise to learn the fundamentals of **Reac
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/your-repo-name.git
+  [ git clone https://github.com/your-username/your-repo-name.git
+](https://github.com/LakhiniVoshadee/React-Vite-Project.git)
