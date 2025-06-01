@@ -8,7 +8,7 @@ export function NavBar() {
                 <div className="flex items-center">
                     <img src={logo} alt="MyApp Logo" className="h-[50px] w-auto rounded-full mr-2.5"/>
                     <p className="text-white text-2xl font-bold uppercase tracking-wide transition-colors duration-300 hover:text-gray-300">
-                        Lakhini<span className="text-orange-500">.</span>
+                        SHOP<span className="text-orange-500">.</span>
                     </p>
                 </div>
 

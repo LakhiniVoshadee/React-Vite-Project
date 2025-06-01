@@ -1,0 +1,31 @@
+[
+  {
+    "id": "1",
+    "name": "LOEWE",
+    "price": 4000.00,
+    "currency": "LKR",
+    "image": "perfume1.jpg"
+
+  },
+  {
+    "id": "2",
+    "name": "COCO Chanel",
+    "price": 6500.00,
+    "currency": "LKR",
+    "image": "perfume2.jpg"
+  },
+  {
+    "id": "3",
+    "name": "diGioia",
+    "price": 8000.00,
+    "currency": "LKR",
+    "image": "perfume3.jpg"
+  },
+  {
+    "id": "4",
+    "name": "diGioia",
+    "price": 8000.00,
+    "currency": "LKR",
+    "image": "perfume3.jpg"
+  }
+]
