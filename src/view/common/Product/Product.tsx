@@ -34,7 +34,7 @@ export function Product({data}: ProductProps) {
     return (
         <div>
             <div
-                className="w-full max-w-[250px] bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 mx-2 mb-4">
+                className="w-full max-w-[250px] bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 mx-2 mb-4 hover:rotate-12">
                 <div className="flex flex-col items-center p-4">
                     <img
                         className="h-24 w-24 object-cover rounded-md"

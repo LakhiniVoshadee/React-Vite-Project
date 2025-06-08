@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import {useNavigate} from "react-router-dom";
 
 type LoginFormData = {
     email: string;
@@ -6,6 +7,9 @@ type LoginFormData = {
 }
 
 export function Login() {
+
+    const  navigate = useNavigate();
+
     const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>();
     const onSubmit = (data: LoginFormData) => {
         console.log("Login submitted successfully:", data);
@@ -16,6 +20,10 @@ export function Login() {
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0d1b2a] to-[#1b263b] py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 transition-all duration-300 hover:shadow-xl">
                 <h1 className="text-3xl font-bold text-gray-800 text-center mb-8">Login</h1>
+                <div className="mt-1 mb-4">
+                    <button onClick={()=> navigate("/")} className="text-sm text-stone-800 hover:text-blue-950 underline">Go Back</button>
+                </div>
+
                 <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
                     <div className="flex flex-col gap-2">
                         <label htmlFor="email" className="text-gray-700 font-medium">Email</label>

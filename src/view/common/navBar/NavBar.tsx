@@ -55,6 +55,15 @@ export function NavBar() {
                             <span className="absolute bottom-0 left-0 w-full h-0.5 bg-white scale-x-0 transition-transform duration-300 origin-right group-hover:scale-x-100 group-hover:origin-left"></span>
                         </Link>
                     </li>
+                    <li>
+                        <Link
+                            className="text-white text-base font-medium px-4 py-2 mx-2 rounded-md transition-all duration-300 relative overflow-hidden hover:bg-[#415A77]/20 hover:text-gray-200 group"
+                            to="/shopping-cart"
+                        >
+                            My Cart
+                            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-white scale-x-0 transition-transform duration-300 origin-right group-hover:scale-x-100 group-hover:origin-left"></span>
+                        </Link>
+                    </li>
                 </ul>
 
                 <button className="bg-blue-500 text-white border-none px-5 py-2.5 rounded-md cursor-pointer transition-colors duration-300 hover:bg-blue-600">
