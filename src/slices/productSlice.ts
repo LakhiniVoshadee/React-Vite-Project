@@ -1,7 +1,8 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import type {ProductData} from "../model/ProductData.ts";
 
 interface ProductState {
-    list: [],
+    list: ProductData[],
     error: string | null | undefined
 }
 
@@ -30,7 +31,7 @@ const productSlice = createSlice({
             state.list = action.payload; // Set the product list with fetched data
 
         }).addCase(getAllProducts.rejected, (state, action) => {
-            state.error = action.error.message;
+            state.error = action.error.message; // Set the error message
             alert("Error loading" + state.error)
 
         })
