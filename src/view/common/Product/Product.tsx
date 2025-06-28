@@ -1,8 +1,7 @@
-import {useState} from "react";
 import {ModifyCart} from "../ModifyCart/ModifyCart.tsx";
 import type {ProductData} from "../../../model/ProductData.ts";
-import {useDispatch} from "react-redux";
-import type {AppDispatch} from "../../../store/store.ts";
+import {useDispatch, useSelector} from "react-redux";
+import type {AppDispatch, RootState} from "../../../store/store.ts";
 import {addItemToCart} from "../../../slices/cartSlice.ts";
 
 type ProductProps = {
@@ -21,12 +20,14 @@ export function Product({data}: ProductProps) {
 
    const dispatch = useDispatch<AppDispatch>();
 
-    const [isActive, setIsActive] = useState(false);
+  const item = useSelector((state: RootState) => state.cart.items.find(cartItem => cartItem.product.id === data.id));
+
+  //  const [isActive, setIsActive] = useState(false);
 
     const addToCart = () => {
         // Logic to add the product to the cart
         dispatch(addItemToCart(data));
-        setIsActive(true);
+       // setIsActive(true);
         console.log(`Adding ${data.name} to cart`);
 
     }
@@ -48,7 +49,7 @@ export function Product({data}: ProductProps) {
                         </div>
                     </div>
                     {
-                        isActive ? (
+                        item ? (
                             <ModifyCart data={{product: data}}/>
                         ) : (
                             <button

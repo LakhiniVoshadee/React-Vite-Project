@@ -1,16 +1,27 @@
-import {useEffect, useState} from "react";
-import type {CartItem} from "../../../model/CartItem.ts";
+
+import type {AppDispatch, RootState} from "../../../store/store.ts";
+import {useDispatch, useSelector} from "react-redux";
+import {decreaseQuantity, increaseQuantity} from "../../../slices/cartSlice.ts";
+import type {ProductData} from "../../../model/ProductData.ts";
+
 
 interface ModifyCart{
-    data: any; // Adjust the type as needed
+    data: {product: ProductData}; // Adjust the type as needed
 }
 
-export const itemsList:CartItem[] = [];
+/*export const itemsList:CartItem[] = [];*/
 
 export function ModifyCart({data}: ModifyCart) {
-    const [itemCount, setItemCount] = useState(1);  //this is the hook of the item count
 
-    useEffect(() => {
+    const dispatch = useDispatch<AppDispatch>(); // Get the dispatch function
+
+   // const [itemCount, setItemCount] = useState(1);  //this is the hook of the item count
+
+    const item = useSelector((state: RootState) => state.cart.items.find(cartItem => cartItem.product.id === data.product.id));
+
+
+
+    /*useEffect(() => {
        let existingItem = itemsList.find(item => item.product.id === data.product.id);
 
        if(existingItem) {
@@ -28,16 +39,26 @@ export function ModifyCart({data}: ModifyCart) {
 
         console.log(itemsList);
 
-    }, [itemCount, data]);
+    }, [itemCount, data]);*/
 
     const decreaseItemCount = () => {
-        setItemCount((preValue =>
+      /*  setItemCount((preValue =>
             preValue > 1 ? preValue - 1 : (alert("Item count can not be less than 1"), preValue))
-        )
+        )*/
+
+        if (item && item.itemCount > 1) { // Check if the item count is greater than 1
+          //  setItemCount(itemCount - 1);   // Decrease the item count
+            dispatch(decreaseQuantity(data.product.id)); // Dispatch the decreaseQuantity action
+        } else {
+            alert("Item count can not be less than 1");
+        }
     }
 
     const increaseItemCount = () => {
-        setItemCount((preValue) => preValue + 1);
+       // setItemCount((preValue) => preValue + 1);
+
+       // setItemCount((preValue) => preValue + 1); // Increase the item count
+        dispatch(increaseQuantity(data.product.id)); // Dispatch the increaseQuantity action
     }
     return (
         <div
@@ -51,7 +72,7 @@ export function ModifyCart({data}: ModifyCart) {
                 >
                     -
                 </button>
-                <small className="text-lg text-gray-800 font-medium">{itemCount}</small>
+                <small className="text-lg text-gray-800 font-medium">{item?.itemCount}</small>
                 <button
                     onClick={increaseItemCount}
                     className="bg-gray-400 text-white text-lg font-semibold w-8 h-8 rounded-lg
