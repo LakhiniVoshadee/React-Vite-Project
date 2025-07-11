@@ -1,140 +1,113 @@
+import './Contact.css';
 import { useForm } from "react-hook-form";
-import { useState } from "react";
-import {backendApi} from "../../../api.ts";
+import { backendApi } from "../../../api.ts";
+import type { ContactData } from "../../../model/ContactData.ts";
 
-type FormData = {
-    name: string;
-    phone: string;
-    email: string;
-    subject: string;
-    message: string;
-};
+type ContactProps = {
+    data?: Partial<ContactData>; // Make data optional and partial
+}
 
-export function Contact() {
-    const { register, handleSubmit, formState: { errors }, reset } = useForm<FormData>();
-    const [serverError, setServerError] = useState<string | null>(null);
-    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+type Contact = ContactData & { id?: number };
 
-    const onSubmit = async (data: FormData) => {
+export function Contact({ data = {} }: ContactProps) {
+    const { register, handleSubmit, formState: { errors }, reset } = useForm<Contact>({
+        defaultValues: { ...data, id: data?.id } // Safely spread data and handle id
+    });
+
+    const onSubmit = async (formData: Contact) => {
         try {
-            const contactData = { ...data, id: Math.floor(Math.random() * 1000000) };
-            // Use the correct endpoint: /contact/save (singular)
-            const response = await backendApi.post("/contacts/save", contactData);
-            setSuccessMessage("Message sent successfully!");
-            setServerError(null);
+            // Generate id only if not provided
+            formData.id = formData.id ?? Date.now();
+
+            const response = await backendApi.post('/contacts/save', formData);
+            console.log('ContactData saved:', response.data);
+            alert('Message sent successfully!');
             reset();
-            console.log("Form submitted successfully:", response.data);
-        } catch (error: any) {
-            setSuccessMessage(null);
-            if (error.response?.status === 400) {
-                setServerError(error.response.data.error || "All fields are required");
-            } else {
-                setServerError("Failed to connect to the server. Please ensure the backend is running.");
-            }
-            console.error("Error submitting form:", error);
+        } catch (error) {
+            console.error('Error saving contact:', error);
+            alert('Failed to send message. Please try again.');
         }
     };
 
     return (
-        <div className="max-w-[500px] mx-auto my-10 p-5 bg-white rounded-xl shadow-[0_4px_8px_rgba(0,0,0,0.1)] text-base transition-shadow duration-300 hover:shadow-lg">
-            <h1 className="pt-20 pb-8 text-2xl font-bold text-gray-800 text-center">Contact Us</h1>
-            {successMessage && <div className="text-green-500 text-sm mb-4 text-center">{successMessage}</div>}
-            {serverError && <div className="text-red-500 text-sm mb-4 text-center">{serverError}</div>}
-            <form className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)}>
-                <div className="flex flex-col">
-                    <label htmlFor="name" className="text-gray-700 font-medium">Name:</label>
+        <div className="contact-container">
+            <h2 className="contact-title">Contact Us</h2>
+            <form className="contact-form" onSubmit={handleSubmit(onSubmit)}>
+                <div className="form-group">
+                    <label className="form-label">Name:</label>
                     <input
                         type="text"
-                        id="name"
-                        className="p-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-green-500 transition-all duration-200"
-                        {...register("name", {
-                            required: "Name is required",
-                            pattern: {
-                                value: /^[a-zA-Z\s]+$/,
-                                message: "Name can only contain letters and spaces"
+                        className="form-input"
+                        {...register('name', {
+                            required: 'Name is required',
+                            minLength: {
+                                value: 2,
+                                message: 'Name must be at least 2 characters'
                             }
                         })}
                     />
-                    {errors.name && <span className="text-red-500 text-sm mt-1.5">{errors.name.message}</span>}
+                    {errors.name && <span className="error-text">{errors.name.message}</span>}
                 </div>
-
-                <div className="flex flex-col">
-                    <label htmlFor="phone" className="text-gray-700 font-medium">Phone:</label>
-                    <input
-                        type="tel"
-                        id="phone"
-                        className="p-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-green-500 transition-all duration-200"
-                        {...register("phone", {
-                            required: "Phone number is required",
-                            pattern: {
-                                value: /^\+?[1-9]\d{1,14}$/,
-                                message: "Invalid phone number"
-                            }
-                        })}
-                    />
-                    {errors.phone && <span className="text-red-500 text-sm mt-1.5">{errors.phone.message}</span>}
-                </div>
-
-                <div className="flex flex-col">
-                    <label htmlFor="email" className="text-gray-700 font-medium">Email:</label>
+                <div className="form-group">
+                    <label className="form-label">Email:</label>
                     <input
                         type="email"
-                        id="email"
-                        className="p-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-green-500 transition-all duration-200"
-                        {...register("email", {
-                            required: "Email is required",
+                        className="form-input"
+                        {...register('email', {
+                            required: 'Email is required',
                             pattern: {
                                 value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                                message: "Invalid email address"
+                                message: 'Invalid email address'
                             }
                         })}
                     />
-                    {errors.email && <span className="text-red-500 text-sm mt-1.5">{errors.email.message}</span>}
+                    {errors.email && <span className="error-text">{errors.email.message}</span>}
                 </div>
-
-                <div className="flex flex-col">
-                    <label htmlFor="subject" className="text-gray-700 font-medium">Subject:</label>
+                <div className="form-group">
+                    <label className="form-label">Phone (optional):</label>
+                    <input
+                        type="tel"
+                        className="form-input"
+                        {...register('phone', {
+                            pattern: {
+                                value: /^\+?[\d\s-]{0,15}$/,
+                                message: 'Invalid phone number'
+                            }
+                        })}
+                    />
+                    {errors.phone && <span className="error-text">{errors.phone.message}</span>}
+                </div>
+                <div className="form-group">
+                    <label className="form-label">Subject:</label>
                     <input
                         type="text"
-                        id="subject"
-                        className="p-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-green-500 transition-all duration-200"
-                        {...register("subject", {
-                            required: "Subject is required",
+                        className="form-input"
+                        {...register('subject', {
+                            required: 'Subject is required',
                             pattern: {
-                                value: /^[a-zA-Z0-9\s]+$/,
-                                message: "Subject can only contain letters, numbers, and spaces"
+                                value: /^.{10,30}$/,
+                                message: 'Subject must be between 10 and 30 characters'
                             }
                         })}
                     />
-                    {errors.subject && <span className="text-red-500 text-sm mt-1.5">{errors.subject.message}</span>}
+                    {errors.subject && <span className="error-text">{errors.subject.message}</span>}
                 </div>
-
-                <div className="flex flex-col">
-                    <label htmlFor="message" className="text-gray-700 font-medium">Message:</label>
+                <div className="form-group">
+                    <label className="form-label">Message:</label>
                     <textarea
-                        id="message"
-                        className="p-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-green-500 transition-all duration-200 resize-y min-h-[100px]"
-                        {...register("message", {
-                            required: "Message is required",
+                        rows={5}
+                        className="form-textarea"
+                        {...register('message', {
+                            required: 'Message is required',
                             minLength: {
                                 value: 10,
-                                message: "Message must be at least 10 characters long"
-                            },
-                            maxLength: {
-                                value: 500,
-                                message: "Message cannot exceed 500 characters"
+                                message: 'Message must be at least 10 characters'
                             }
                         })}
-                    ></textarea>
-                    {errors.message && <span className="text-red-500 text-sm mt-1.5">{errors.message.message}</span>}
+                    />
+                    {errors.message && <span className="error-text">{errors.message.message}</span>}
                 </div>
-
-                <button
-                    type="submit"
-                    className="bg-green-500 text-white py-2.5 px-4 rounded-md hover:bg-green-600 focus:outline-none focus:ring-1 focus:ring-green-500 transition-all duration-200 cursor-pointer"
-                >
-                    Send Message
-                </button>
+                <button type="submit" className="submit-btn">Send</button>
             </form>
         </div>
     );
