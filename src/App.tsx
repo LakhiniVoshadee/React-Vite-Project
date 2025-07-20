@@ -1,20 +1,32 @@
 import './App.css';
 
-import {BrowserRouter, Route, Routes} from "react-router-dom";
+import {Route, Routes, useNavigate} from "react-router-dom";
 import {Login} from "./view/pages/login/Login.tsx";
 import {DefaultLayout} from "./view/common/DefaultLayout/DefaultLayout.tsx";
+import {useEffect} from "react";
+import {isTokenExpired} from "./auth/auth.ts";
 
 
+function App() {
+    const navigate = useNavigate(); // for navigation
 
-function App(){
-    return(
-        <BrowserRouter>
-           {/* <DefaultLayout></DefaultLayout>*/}
+    useEffect(() => {  // to redirect to login page if no token is present in local storage
+        const token = localStorage.getItem("token");
+        if (!token || isTokenExpired(token)) {
+            localStorage.removeItem("token");
+            navigate("/login");
+        }
+    }, [navigate]);
+    return (
+
+
+        <>
             <Routes>
                 <Route path="/*" element={<DefaultLayout/>}></Route>
                 <Route path="/login" element={<Login/>}></Route>
             </Routes>
-        </BrowserRouter>
+        </>
+
     );
 }
 
